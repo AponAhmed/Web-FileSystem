@@ -1,0 +1,223 @@
+* {
+    font-family: 'Ubuntu', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+svg {
+    width: 100%;
+}
+
+/*Layout */
+.file-explorer-wrap {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+.side-controller {
+    background: #171717;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.side-controller ul li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.side-controller ul li a {
+    width: 100%;
+    text-align: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid #000;
+    display: flex;
+    border-top: 1px solid #404040;
+}
+
+.side-controller ul li:last-child a {
+    border-bottom: 0;
+}
+
+.side-controller ul li:first-child a {
+    border-top: 0;
+}
+
+.fs-empty {
+    padding: 15px;
+    color: #626262;
+    font-size: 18px;
+}
+
+.side-controller ul li svg,
+.side-controller ul li img {
+    width: 30px;
+    height: 30px;
+}
+
+.side-controller ul a:hover {
+    background: #333;
+}
+
+.files-world {
+    flex-grow: 1;
+}
+
+.fs-nav-outer {
+    height: 35px;
+}
+
+/**File World**/
+.file-exp-outer {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.file-exp {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.single-file {
+    width: 109px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 109px;
+    margin: 10px;
+}
+
+.single-file a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+.single-file:hover {
+    background: rgba(0, 0, 0, .03);
+    border-radius: 4px;
+}
+
+.file-icon {
+    max-width: 100%;
+    height: calc(100% - 25px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.file-icon svg {
+    max-width: 50px;
+    transition: all .1s;
+}
+
+.file-icon {
+    transition: all .1s;
+}
+
+.single-file:hover .file-icon {
+    transform: scale(1.2);
+}
+
+.file-name {
+    font-weight: 300;
+    font-size: 14px;
+    max-width: 90%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/*File Type Icon Css*/
+.fileTypeIcon {
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: 42px;
+    background-repeat: no-repeat;
+}
+
+/*File Nav*/
+
+.files-world {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.fs-nav {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    padding: 6px 13px;
+}
+
+.fs-nav li {
+    line-height: 1;
+    display: flex;
+    background: #f0f0f0;
+    font-size: 13px;
+    padding: 4px 11px;
+    margin-right: 20px;
+    border-radius: 16px;
+    border: 1px solid #ddd;
+    color: #888787;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.fs-nav li::before {
+    content: "";
+    position: absolute;
+    right: -24px;
+    top: 3px;
+    border: 8px solid transparent;
+    border-left-color: #808080;
+}
+
+.fs-nav li:last-child::before {
+    border: none;
+}
+
+.fs-nav li::after {
+    content: "";
+    position: absolute;
+    right: -23px;
+    top: 3px;
+    border: 8px solid transparent;
+    border-left-color: #fff;
+}
+
+
+.fs-nav li:first-child {
+    padding: 0;
+    background: transparent;
+    border: 0;
+}
+
+.fs-nav li a img {
+    width: 20px;
+}
+
+.fs-nav li a {
+    line-height: 1;
+    text-transform: uppercase;
+    font-size: 13px;
+    text-decoration: none;
+    color: #4a4a4a;
+}
