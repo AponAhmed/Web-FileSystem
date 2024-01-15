@@ -7,6 +7,7 @@ use Aponahmed\Filesystem\FileSystemController;
 
 class FileSystem
 {
+
     /**
      * Directory to Retrive
      */
@@ -16,11 +17,11 @@ class FileSystem
     /**
      * Number of Step
      */
-    public int $step = 3;
+    public int $step = 2;
     /**
      * Root Directory for Base directory
      */
-    public string $rootDir;
+    public static string $rootDir;
     public  static $subDir = false;
     /**
      * Current Folder Data
@@ -30,27 +31,19 @@ class FileSystem
      * File Icon Object 
      */
     private object $FileIcon;
+    private $controller;
+    private static $router;
 
     function __construct($options)
     {
-        $this->rootDir = $options['root'];
-        if (isset($_GET['i']) && !empty($_GET['i'])) {
-            $ss = $_GET['i'];
-            if (self::$urlEnc) {
-                $ss = $this->encrypt_decrypt('decrypt', $ss);
-            }
-            self::$subDir = $ss;
+        self::$rootDir = $options['root'];
+        self::$router = new Router();
+        $this->DIR = $options['root'];
+        if (isset($options['dir'])) {
+            $this->DIR = $options['root'] . "/" . $options['dir'];
+            self::$rootDir .= "/" . $options['dir'];
         }
-        if (isset($options['dir']) && !empty($options['dir'])) {
-            $this->DIR = $options['dir'];
-        } else {
-            $this->DIR = $options['root'];
-            if (self::$subDir) {
-                $this->DIR .= "/" . self::$subDir;
-            }
-        }
-        $this->DIR = preg_replace('/(\/+)/', '/', $this->DIR);
-
+        $this->DIR = self::$router->getCurrentPath($this->DIR);
         $this->step = (int) isset($options['step']) ? $options['step'] : $this->step;
         $PathInfo = pathinfo($this->DIR);
         //$this->rootDir = $PathInfo['basename'];
@@ -62,6 +55,10 @@ class FileSystem
     function getFileData()
     {
         $this->data = self::folderData($this->DIR, $this->step, self::$subDir);
+
+        // echo "<pre>";
+        // var_dump($this->data);
+
         return $this->data;
     }
 
@@ -79,15 +76,16 @@ class FileSystem
     function getFileExp()
     {
         $htm = "<div class='file-exp'>";
+
         if ($this->data) {
             foreach ($this->data as $k => $file) {
                 $htm .= "<div class='single-file' title='{$file['name']}'>";
                 if ($file['type'] == 'dir') {
-                    $kEnc = $file['path'];
+                    $kEnc = $file['parent'] . $file['path'];
                     if (self::$urlEnc) {
                         $kEnc = $this->encrypt_decrypt('encrypt', $kEnc);
                     }
-                    $htm .= "<a href='?i=$kEnc'>" . $this->fuleBuild($file) . "</a>";
+                    $htm .= "<a href='.$kEnc'>" . $this->fuleBuild($file) . "</a>";
                 } else {
                     $htm .= $this->fuleBuild($file);
                 }
@@ -103,6 +101,7 @@ class FileSystem
 
     private function fuleBuild($fileInfo)
     {
+
         $icon = "";
         if ($fileInfo['type'] == 'dir') {
             if (isset($fileInfo['child']) && is_array($fileInfo['child']) && count($fileInfo['child']) > 0) {
@@ -134,7 +133,7 @@ class FileSystem
         $step--;
         $folders = [];
         if ($step > 0) {
-            foreach (new \DirectoryIterator($dir) as $fileInfo) {
+            foreach (new \DirectoryIterator(urldecode($dir)) as $fileInfo) {
                 if ($fileInfo->isDot())
                     continue;
 
@@ -144,10 +143,11 @@ class FileSystem
                     $cDir = "/" . $fileInfo->getFilename();
                 }
                 if ($fileInfo->isDir()) {
+
                     $folder = [
                         'path' => $cDir,
                         'name' => $fileInfo->getFilename(),
-                        'parent' => $dir,
+                        'parent' => str_replace(self::$rootDir, "", $dir),
                         'child' => self::folderData($dir . "/" . $fileInfo->getFilename(), $step, $cDir),
                         'type' => 'dir',
                         'order' => 0,
@@ -172,7 +172,7 @@ class FileSystem
     }
     public function encrypt_decrypt($action, $string)
     {
-        //return $string;
+        return $string;
         $output = false;
         $encrypt_method = "AES-256-CBC";
         $secret_key = 'fsk';

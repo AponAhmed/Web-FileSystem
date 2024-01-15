@@ -6,42 +6,35 @@ namespace Aponahmed\Filesystem;
 class FileSystemController
 {
     private $fs;
+    private $router;
 
     function __construct($fs)
     {
         $this->fs = $fs;
+        $this->router = Router::getInstance();
     }
 
     function currentDirNav()
     {
-        $dirs = explode("/", $this->fs->DIR);
-        $dirs = array_filter($dirs);
-        $itemsC = count($dirs);
+        $itemsC = count($this->router->segments);
         if ($itemsC == 1) {
             return "";
         }
-        $arr = [];
-        $path = "";
         $html = "<ul class='fs-nav'>";
-        $i = 0;
-        foreach ($dirs as $step) {
-            $i++;
+        $c = 0;
+        foreach ($this->router->segments as $i => $step) {
+            $c++;
+            $url = implode('/', array_slice($this->router->segments, 0, $i + 1));
+
             $label = $step;
-            if ($step == $this->fs->rootDir) {
+            if ($i == 0) {
                 $label = "<img src=\"" . _ASSET_URI . "icons/home.png\">";
-                $step = "/";
+                $url = implode('/', array_slice($this->router->segments, 0, 1));
             }
-            $path .= "/$step";
-            $path = preg_replace('/(\/+)/', '/', $path);
-            $pathEnc = $path;
-            if ($this->fs::$urlEnc) {
-                $pathEnc =  $this->fs->encrypt_decrypt('encrypt', $path);
-            }
-            $arr[$pathEnc] = $label;
-            if ($i == $itemsC) {
+            if ($c == $itemsC) {
                 $html .= "<li>$label</li>";
             } else {
-                $html .= "<li><a href='?i=$pathEnc'>$label</a></li>";
+                $html .= "<li><a href='/$url'>$label</a></li>";
             }
         }
         $html .= "</ul>";
